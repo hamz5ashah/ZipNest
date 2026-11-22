@@ -33,6 +33,10 @@ DX_JAR = os.path.join(CACHE, "dx.jar")
 APKSIG_JAR = os.path.join(CACHE, "apksig.jar")
 OUT = os.path.join(HERE, "build")
 
+# Signing key settings; override with environment variables (e.g. GitHub secrets).
+KEY_PASSWORD = os.environ.get("ANDROID_KEYSTORE_PASSWORD") or "zipnest"
+KEY_ALIAS = os.environ.get("ANDROID_KEY_ALIAS") or "zipnest"
+
 
 def manifest():
     mimes = ["application/zip", "application/x-zip-compressed", "application/vnd.rar",
@@ -163,7 +167,7 @@ def main():
     keystore = os.path.join(HERE, "buildtools", "debug-signing.p12")
     if not os.path.exists(keystore):
         run(["keytool", "-genkeypair", "-keystore", keystore, "-storetype", "PKCS12",
-             "-storepass", "zipnest", "-keypass", "zipnest", "-alias", "zipnest",
+             "-storepass", KEY_PASSWORD, "-keypass", KEY_PASSWORD, "-alias", KEY_ALIAS,
              "-keyalg", "RSA", "-keysize", "2048", "-validity", "10000",
              "-dname", "CN=ZipNest Debug, O=ZipNest"])
 
@@ -176,7 +180,7 @@ def main():
          "--add-exports", "java.base/sun.security.pkcs=ALL-UNNAMED",
          "--add-exports", "java.base/sun.security.util=ALL-UNNAMED",
          "-cp", os.pathsep.join([APKSIG_JAR, signer_classes]), "Signer",
-         keystore, "zipnest", "zipnest", unsigned, apk])
+         keystore, KEY_PASSWORD, KEY_ALIAS, unsigned, apk])
     print("APK:", apk, os.path.getsize(apk), "bytes")
 
 

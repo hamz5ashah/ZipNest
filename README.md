@@ -195,6 +195,22 @@ Needs Go 1.24+, Python 3, a JDK 17+ and NSIS 3 (`makensis`) — no Android SDK, 
 Outputs go to `dist/`. The first run downloads three build-time jars from Maven
 Central (Android framework stubs, the `dx` DEX compiler, Google's `apksig`).
 
+### Automatic builds (GitHub Actions)
+
+`.github/workflows/build.yml` builds everything on every push and pull request and
+uploads the installer, portable ZIPs, APK and Linux CLI as a downloadable artifact.
+Pushing a version tag publishes a GitHub Release with those files:
+
+```bash
+git tag v1.5.0
+git push origin v1.5.0
+```
+
+Add these repository secrets (Settings → Secrets and variables → Actions) so builds are
+signed with your keys: `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`,
+`MSIX_KEY_BASE64`, `MSIX_CERT_BASE64` (base64 of the keystore, key and certificate).
+Without them the workflow uses temporary keys, which must not be published.
+
 **Signing:** the APK is signed with a locally generated key in
 `android/buildtools/debug-signing.p12`. Keep that file: Android only installs
 updates signed with the same key. For Google Play, create a release key and
