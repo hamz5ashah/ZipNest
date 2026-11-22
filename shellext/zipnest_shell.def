@@ -1,0 +1,4 @@
+LIBRARY ZipNestShell
+EXPORTS
+    DllGetClassObject PRIVATE
+    DllCanUnloadNow PRIVATE
