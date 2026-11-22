@@ -1,8 +1,8 @@
 name: Build
 
 # Builds every ZipNest deliverable (Windows installer + portable ZIPs, Android APK,
-# Linux CLI) on each push and pull request. Pushing a tag like "v1.5.0" also
-# publishes a GitHub Release with the files attached.
+# Linux CLI) on each push and pull request. Pushing a tag like "v1.5.0", or
+# publishing a release on github.com, attaches the files to that release.
 #
 # Repository secrets (Settings > Secrets and variables > Actions):
 #   ANDROID_KEYSTORE_BASE64    base64 of android/buildtools/debug-signing.p12
@@ -16,6 +16,8 @@ on:
   push:
     branches: [main]
     tags: ["v*"]
+  release:
+    types: [published] # a release created on github.com gets the files attached
   pull_request:
   workflow_dispatch:
 
