@@ -21,11 +21,11 @@ sys.path.insert(0, os.path.join(HERE, "buildtools"))
 from axml import Element as E, Ref, Hex, encode_manifest, encode_arsc  # noqa: E402
 
 PKG = "com.zipnest.app"
-VERSION_CODE = 6
-VERSION_NAME = "1.5.0"
+VERSION_CODE = 7
+VERSION_NAME = "2.0.0"
 MIN_SDK = 26
 TARGET_SDK = 34
-THEME = 16974392  # android.R.style.Theme_Material_Light_DarkActionBar
+THEME = 16974401  # android.R.style.Theme_Material_Light_NoActionBar
 
 CACHE = os.path.join(HERE, "buildtools", "cache")
 ANDROID_JAR = os.path.join(CACHE, "android-all.jar")
@@ -70,6 +70,7 @@ def manifest():
             "android:allowBackup": False,
             "android:requestLegacyExternalStorage": True,
             "android:extractNativeLibs": True,   # the engine must exist as a real executable file
+            "android:usesCleartextTraffic": True,  # the interface is served by the engine on 127.0.0.1
         }, [
             E("activity", {
                 "android:name": PKG + ".MainActivity",

@@ -15,6 +15,36 @@ add, extract, test and delete files, with password support.
 | Open archives from other apps (Files, browser, chat apps) | — | ✓ |
 | Command line | `zipnest-cli.exe` / `ZipNest.exe x file.rar` | — |
 
+### What's new in 2.0 — a new, modern interface
+
+![ZipNest 2.0 on Windows](assets/screenshot-windows.png)
+
+ZipNest has a completely new interface, the same on Windows and Android:
+
+- **Modern design** with a sidebar (places, drives, favorites, recent archives), a
+  toolbar with *Add, Extract To, Test, View, Delete, Find, Wizard, Info, Repair,
+  Convert*, a breadcrumb address bar, a sortable file list and a **details pane with
+  previews** (images, text, hex) for files on disk and inside archives.
+- **Light and dark themes** (or follow the system) and a phone layout with a bottom
+  action bar, long-press selection and swipe-friendly dialogs.
+- **Edit any archive**: add, delete and **rename** files inside ZIP, 7z, NEST and TAR
+  archives (7z and NEST are rebuilt with their password and settings kept), and edit
+  ZIP / NEST **comments**.
+- **Find** files by name or text, also inside archives; **Benchmark**; a step-by-step
+  **Wizard**; **Convert** several archives at once.
+- Add dialog: format cards, compression slider, split volumes, **exclude patterns**,
+  test after creating, delete files after archiving, add today's date to the name,
+  password strength meter.
+- **Drag and drop** files onto the window to compress them or add them to the open archive.
+- Keyboard shortcuts like a classic archiver: Alt+A add, Alt+E extract, Alt+T test,
+  Alt+V view, Alt+I info, Alt+R repair, F2 rename, Del delete, F3 find, Backspace up.
+- 7z reading now verifies every file's checksum.
+
+On Windows the interface runs in Microsoft Edge WebView2 (built into Windows 11 and
+installed with Edge on Windows 10); without it, ZipNest opens in Edge's app mode.
+
+<p align="center"><img src="assets/screenshot-android.png" width="300" alt="ZipNest 2.0 on a phone"></p>
+
 ### What's new in 1.5 — ZipNest's own format: `.nest`
 
 A modern archive format with the features that make RAR popular:
@@ -166,7 +196,9 @@ core/              archive engine (Go) – shared by both apps
   zipcrypt.go      WinZip AES-256 (read+write) and ZipCrypto (read)
   core_test.go     round-trip tests
 cli/               command-line interface (human and --json output)
-cmd/zipnest/      Windows GUI (native Win32 via lxn/walk)
+cmd/zipnest/      Windows app (WebView2 window, Explorer integration, installer setup)
+cmd/zipnest-web/  the interface in a web browser (Linux, macOS, development)
+ui/               the interface: local HTTP server + web front-end (ui/web)
 cmd/zipnest-core/ engine as a standalone CLI (also packaged inside the APK)
 cmd/zipnest-sfx/  self-extractor stub (plain Win32, embedded into ZipNest.exe)
 android/           Android app (Java, no AndroidX) + an SDK-free build
@@ -202,8 +234,8 @@ uploads the installer, portable ZIPs, APK and Linux CLI as a downloadable artifa
 Pushing a version tag publishes a GitHub Release with those files:
 
 ```bash
-git tag v1.5.0
-git push origin v1.5.0
+git tag v2.0.0
+git push origin v2.0.0
 ```
 
 Add these repository secrets (Settings → Secrets and variables → Actions) so builds are

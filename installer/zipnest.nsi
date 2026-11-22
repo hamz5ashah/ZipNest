@@ -5,7 +5,7 @@ Target amd64-unicode   ; native 64-bit installer (ZipNest itself is 64-bit)
 SetCompressor /SOLID lzma
 
 !ifndef VERSION
-  !define VERSION "1.5.0"
+  !define VERSION "2.0.0"
 !endif
 !ifndef SRCDIR
   !define SRCDIR "../dist/ZipNest-${VERSION}-windows-amd64"

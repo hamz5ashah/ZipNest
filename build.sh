@@ -6,10 +6,10 @@
 # osslsigncode and openssl. No Android SDK or Windows SDK needed.
 set -euo pipefail
 cd "$(dirname "$0")"
-VERSION=1.5.0
+VERSION=2.0.0
 
 echo "== tests"
-go test ./core/
+go test ./core/ ./ui/
 
 echo "== Windows resources"
 (cd cmd/zipnest && go run ../../tools/winres)

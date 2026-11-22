@@ -24,6 +24,7 @@ ATTR_IDS = {
     "maxSdkVersion": 0x01010271, "allowBackup": 0x01010280,
     "largeHeap": 0x0101035a, "requestLegacyExternalStorage": 0x01010603,
     "extractNativeLibs": 0x010104ea, "drawable": 0x01010199,
+    "usesCleartextTraffic": 0x010104ec,
 }
 
 # Res_value data types

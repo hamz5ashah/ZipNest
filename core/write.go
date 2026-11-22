@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"time"
@@ -35,9 +36,11 @@ type CreateOptions struct {
 	// .nest only:
 	RecoveryPercent int    // add a recovery record of this size (1-50 %)
 	Lock            bool   // mark the archive as locked (no changes)
-	Comment         string // archive comment
-	BaseDir         string // folder inside the archive to add the files to
-	Progress        ProgressFunc
+	Comment         string // archive comment (.nest and ZIP)
+	// Exclude skips files whose name or path matches one of these wildcards.
+	Exclude  []string
+	BaseDir  string // folder inside the archive to add the files to
+	Progress ProgressFunc
 }
 
 type source struct {
@@ -46,7 +49,27 @@ type source struct {
 	info fs.FileInfo
 }
 
-func collect(inputs []string, baseDir, exclude string) ([]source, int64, error) {
+// excluded reports whether a file matches one of the exclude patterns
+// (wildcards; matched against the file name and the path inside the archive).
+func excluded(name string, patterns []string) bool {
+	base := path.Base(name)
+	for _, p := range patterns {
+		p = strings.TrimSpace(strings.ReplaceAll(p, "\\", "/"))
+		if p == "" {
+			continue
+		}
+		lp := strings.ToLower(p)
+		if ok, _ := path.Match(lp, strings.ToLower(base)); ok {
+			return true
+		}
+		if ok, _ := path.Match(lp, strings.ToLower(name)); ok {
+			return true
+		}
+	}
+	return false
+}
+
+func collect(inputs []string, baseDir, exclude string, patterns ...string) ([]source, int64, error) {
 	baseDir = CleanPath(baseDir)
 	var out []source
 	var total int64
@@ -76,6 +99,12 @@ func collect(inputs []string, baseDir, exclude string) ([]source, int64, error) 
 				return err
 			}
 			name := filepath.ToSlash(rel)
+			if len(patterns) > 0 && excluded(name, patterns) {
+				if d.IsDir() {
+					return filepath.SkipDir
+				}
+				return nil
+			}
 			if baseDir != "" {
 				name = baseDir + "/" + name
 			}
@@ -112,7 +141,7 @@ func Create(out string, inputs []string, opt CreateOptions) error {
 	if opt.Level < 0 || opt.Level > 9 {
 		opt.Level = 6
 	}
-	srcs, total, err := collect(inputs, opt.BaseDir, out)
+	srcs, total, err := collect(inputs, opt.BaseDir, out, opt.Exclude...)
 	if err != nil {
 		return err
 	}
@@ -191,6 +220,9 @@ func writeZip(f *os.File, out string, srcs []source, total int64, opt CreateOpti
 		}
 	}
 	zw := zip.NewWriter(f)
+	if opt.Comment != "" {
+		zw.SetComment(opt.Comment)
+	}
 	if len(opt.SFXStub) > 0 {
 		zw.SetOffset(int64(len(opt.SFXStub))) // offsets relative to the start of the .exe
 	}

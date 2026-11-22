@@ -6,6 +6,7 @@ import (
 	"compress/bzip2"
 	"errors"
 	"fmt"
+	"hash/crc32"
 	"io"
 	"os"
 	"path/filepath"
@@ -185,7 +186,11 @@ func walk7z(p, password string, fn visitFunc) error {
 			if err != nil {
 				return nil, map7zErr(err, password)
 			}
-			return readCloser{Reader: mapErrReader{rc, password}, close: rc.Close}, nil
+			var r io.Reader = mapErrReader{rc, password}
+			if sf.CRC32 != 0 { // the library does not check file checksums itself
+				r = &crcReader{r: r, h: crc32.NewIEEE(), want: sf.CRC32}
+			}
+			return readCloser{Reader: mapErrReader{r, password}, close: rc.Close}, nil
 		})
 		if err != nil {
 			return map7zErr(err, password)

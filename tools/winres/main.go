@@ -38,8 +38,8 @@ func main() {
 		LongPathAware:       true,
 	})
 	vi := version.Info{}
-	vi.SetFileVersion("1.5.0.0")
-	vi.SetProductVersion("1.5.0.0")
+	vi.SetFileVersion("2.0.0.0")
+	vi.SetProductVersion("2.0.0.0")
 	vi.Set(version.LangNeutral, version.ProductName, "ZipNest")
 	vi.Set(version.LangNeutral, version.FileDescription, desc)
 	vi.Set(version.LangNeutral, version.OriginalFilename, orig)

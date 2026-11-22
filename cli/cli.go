@@ -17,7 +17,7 @@ import (
 	"zipnest/core"
 )
 
-const Version = "1.5.0"
+const Version = "2.0.0"
 
 // SFXStub is the self-extractor program (set by ZipNest.exe, which embeds it).
 var SFXStub []byte
